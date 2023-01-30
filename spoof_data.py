@@ -81,6 +81,10 @@ class FakeData:
     def accelerometerNoise(mu=0, sigma=0.2):
         #returns random gaussian noise for accelerometer non-useful axis
         return random.gauss(mu=mu, sigma=sigma)
+
+    def polynomialAcceleration(timepoint):
+        #return arbitrary polynomial function of timepoint
+        return (0.1*timepoint - 2)**3 + 2*(0.1*timepoint - 2)**2
         
         
 
