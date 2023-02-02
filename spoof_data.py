@@ -1,86 +1,85 @@
 import numpy as np
+import matplotlib.pyplot as plt
 import random
-#from collections import namedtuple
+
 
 class FakeData:
     def __init__(self):
-        self.cumulative_time_ = 0
-        self.num_datapoints_ = 100
-        self.avg_time_delta_micros_ = 1000
-        self.max_variation_time_delta_ = 100
-        self.num_axis_ = 3
-        self.active_axis_ = 1
-        
-    def oneDimensionAcceleration(self, trajectory_function):
-        
-        self.cumulative_time_ = 0
-        time_points = np.zeros(self.num_datapoints_)
-        acc_vals = np.zeros(self.num_datapoints_)
-        
-        for i in range(self.num_datapoints_):
-            
-            #make noisy intervals for data collection
-            time_delta_noise = random.randint(-self.max_variation_time_delta_, self.max_variation_time_delta_)
-            time_delta = self.avg_time_delta_micros_ + time_delta_noise
-            self.cumulative_time_ += time_delta
-            
-            #update timepoints and acceleration values
-            time_points[i] = self.cumulative_time_
-            acc_vals[i] = self.trajectory_function(self.cumulative_time_)
-        
-        return time_points, acc_vals
-    
-    
-    def oneDimensionFullRun(self, acceleration_function, deceleration_function):
         pass
-    
-    def threeDimensionalAcceleration(self, acceleration_function):
-        self.cumulative_time_ = 0
-        time_points = np.zeros(self.num_datapoints_)
-        acc_vals = np.zeros([self.num_datapoints_, self.num_axis_])
-        
-        for i in range(self.num_datapoints_):
-            
-            #make noisy intervals for data collection
-            time_delta_noise = random.randint(-self.max_variation_time_delta_, self.max_variation_time_delta_)
-            time_delta = self.avg_time_delta_micros_ + time_delta_noise
-            self.cumulative_time_ += time_delta
-            
-            #update timepoints and acceleration values
-            time_points[i] = self.cumulative_time_
-            for j in range(self.num_axis_):
-                if j == self.active_axis_:  
-                    #add acc val
-                    acc_vals[i, j] = self.trajectory_function(self.cumulative_time_)
-                else:
-                    #add noise
-                    acc_vals[i, j] = self.accelerometerNoise(mu=0, sigma=0.2)
-                    
-        return time_points, acc_vals
-    
-    
-    def threeDimensionalFullRun(self, acceleration_function, deceleration_function):
-        pass
-    
-    def linearAcceleration(timepoint):
-        #return arbitrary linear function of timepoint.
-        return (0.5*timepoint) + 0.325
-    
-    def linearDeceleration(timepoint):
-        #return arbitrary linear function of timepoint.
-        return (-0.75*timepoint) + 0.496
-    
-    def exponentialAcceleration(timepoint):
-        #arbitrary exponential acceleration function 
-        return 0.25*np.exp(timepoint)
-    
-    def inverseDeceleration(timepoint):
-        #inverse deceleration function modified to avoid division by 0 errors
-        return (1/(timepoint+0.2))
-    
-    def accelerometerNoise(mu=0, sigma=0.2):
-        #returns random gaussian noise for accelerometer non-useful axis
-        return random.gauss(mu=mu, sigma=sigma)
-        
-        
 
+    def plotRun(run):
+        data, noisy_data, timestamps = run()
+        plt.plot(timestamps, data)
+        plt.plot(timestamps, noisy_data)
+        plt.show()
+        return None
+
+    def run1():
+        timestamps = np.linspace(0, 100, 1000)
+        data = np.zeros(len(timestamps))
+        noisy_data = np.zeros(len(timestamps))
+
+        for i in range(len(timestamps)):
+            data[i] = -0.03*timestamps[i]**2 + 3*timestamps[i]
+            noisy_data[i] = data[i] + random.gauss(mu=0, sigma=0.5)
+        return data, noisy_data, timestamps
+
+    def run2():
+        timestamps = np.linspace(1, 100, 1000)
+        data = np.zeros(len(timestamps))
+        noisy_data = np.zeros(len(timestamps))
+
+        for i in range(len(timestamps)):
+            data[i] = np.log(timestamps[i])
+            noisy_data[i] = data[i] + random.gauss(0, 0.05)
+        return data, noisy_data, timestamps
+
+    def run3():
+        timestamps = np.linspace(0, 100, 1000)
+        data = np.zeros(len(timestamps))
+        noisy_data = np.zeros(len(timestamps))
+
+        for i in range(len(timestamps)):
+            data[i] = (0.1*timestamps[i] - 2)**3 + 2*(0.1*timestamps[i] - 2)**2
+            noisy_data[i] = data[i] + random.gauss(0, 0.05)
+        return data, noisy_data, timestamps
+
+    def run4():
+        timestamps = np.linspace(0, 8, 1000)
+        data = np.zeros(len(timestamps))
+        noisy_data = np.zeros(len(timestamps))
+
+        for i in range(len(timestamps)):
+            data[i] = np.exp(-timestamps[i]) * np.sin(timestamps[i])
+            noisy_data[i] = data[i] + random.gauss(0, 0.005)
+        return data, noisy_data, timestamps
+
+    def run5():
+        timestamps = np.linspace(0, 8, 1000)
+        data = np.zeros(len(timestamps))
+        noisy_data = np.zeros(len(timestamps))
+
+        for i in range(len(timestamps)):
+            data[i] = 0.1*np.exp(timestamps[i]) + 2*timestamps[i]
+            noisy_data[i] = data[i] + random.gauss(0, 0.5)
+        return data, noisy_data, timestamps
+
+    def run6():
+        timestamps = np.linspace(0, 12, 1000)
+        data = np.zeros(len(timestamps))
+        noisy_data = np.zeros(len(timestamps))
+
+        for i in range(len(timestamps)):
+            data[i] = 5*np.sin(timestamps[i])
+            noisy_data[i] = data[i] + random.gauss(0, 0.15)
+        return data, noisy_data, timestamps
+
+    def run7():
+        timestamps = np.linspace(0, 15, 1000)
+        data = np.zeros(len(timestamps))
+        noisy_data = np.zeros(len(timestamps))
+
+        for i in range(len(timestamps)):
+            data[i] = 5*timestamps[i]
+            noisy_data[i] = data[i] + random.gauss(0, 0.35)
+        return data, noisy_data, timestamps
