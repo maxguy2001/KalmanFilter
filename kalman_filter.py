@@ -59,14 +59,17 @@ class KalmanFilter:
         return kalman_gain
 
     def getStateEstimate(self, observed_state, kalman_gain):
-        new_estimate = self.new_state_estimate + \
-            (kalman_gain @ (observed_state - self.new_state_estimate))
+        state_transition_matrix = self.getStateTransitionMatrix()
+        new_estimate = self.state_vector + \
+            (kalman_gain @ (observed_state -
+             state_transition_matrix @ self.new_state_estimate))
         self.state_vector = new_estimate
         return None
 
     def getStateCovarianceMatrix(self, kalman_gain):
+        state_transition_matrix = self.getStateTransitionMatrix()
         self.state_covariance_matrix = self.state_covariance_matrix - \
-            (kalman_gain @ self.state_covariance_matrix)
+            (kalman_gain @ state_transition_matrix @ self.state_covariance_matrix)
         return None
 
     def propagate(self, current_timestamp):
