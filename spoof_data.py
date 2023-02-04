@@ -85,6 +85,5 @@ class FakeData:
     def polynomialAcceleration(timepoint):
         #return arbitrary polynomial function of timepoint
         return (0.1*timepoint - 2)**3 + 2*(0.1*timepoint - 2)**2
-        
-        
+
 
