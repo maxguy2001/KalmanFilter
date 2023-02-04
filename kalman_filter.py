@@ -13,8 +13,9 @@ class KalmanFilter:
 
         self.process_noise_covariance_matrix = np.eye(
             3) * 0.0001
+
         self.error_covariance_matrix = np.zeros([3, 3])
-        self.system_noise_covariance_matrix = np.eye(3)*0.001
+        self.system_noise_covariance_matrix = np.zeros([3, 3])
 
         self.old_timestamp = initial_timestamp
         self.time_delta = 0
@@ -29,7 +30,9 @@ class KalmanFilter:
         old state matrix
         """
         # TODO: consider more complex system models later
-        return np.array([[1, 0, 0], [self.time_delta, 1, 0], [self.time_delta**2, self.time_delta, 1]], dtype=object)
+        mat = [1, 0, 0, self.time_delta, 1, 0,
+               self.time_delta**2, self.time_delta, 1]
+        return np.array(mat).reshape(3, 3)
 
     # measurement update functions
 
