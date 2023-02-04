@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import random
 
 
-class FakeData:
+class SpoofData:
     def __init__(self):
         pass
 
