@@ -4,29 +4,34 @@ import numpy as np
 
 class KalmanFilter:
 
-    def __init__(self, initial_timestamp):
+    def __init__(self, initial_timestamp, state_cov_mat, meas_cov_mat, sys_noise_cov_mat):
         self.state_vector = np.zeros(3)  # a, v, s
-        self.state_covariance_matrix = np.zeros([3, 3])
+
+        # important
+        self.state_covariance_matrix = state_cov_mat
+        #(np.ones([3, 3]) - np.eye(3)) * -5000
 
         self.measurement_vector = np.zeros(3)
 
         # This seems important...
-        self.measurement_covariance_matrix = (
-            np.ones([3, 3]) - np.eye(3)) * 5000
+        self.measurement_covariance_matrix = meas_cov_mat
+        #(np.ones([3, 3]) - np.eye(3)) * 5000
 
-        self.process_noise_covariance_matrix = np.eye(
-            3) * 0.0001
+        # self.process_noise_covariance_matrix = (
+        # np.ones([3, 3]) - np.eye(3)) * 10
 
         self.error_covariance_matrix = np.eye(3)
-        self.system_noise_covariance_matrix = np.eye(3)  # *0.000002
+
+        # this one is also important
+        self.system_noise_covariance_matrix = sys_noise_cov_mat
+        #(np.ones([3, 3]) - np.eye(3)) * 5000
 
         self.old_timestamp = initial_timestamp
         self.time_delta = 0
 
-        self.new_state_estimate = np.zeros(3)
+        self.new_state_estimate = np.ones(3)*0.01
 
     # propagation functions
-
     def getStateTransitionMatrix(self):
         """
         get the state transition matrix which is the dynamic system function applied to the
@@ -34,7 +39,7 @@ class KalmanFilter:
         """
         # TODO: consider more complex system models later
         mat = [1, 0, 0, self.time_delta, 1, 0,
-               self.time_delta**2, self.time_delta, 1]
+               0.5*self.time_delta**2, self.time_delta, 1]
         return np.array(mat).reshape(3, 3)
 
     # measurement update functions
