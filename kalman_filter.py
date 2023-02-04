@@ -9,13 +9,16 @@ class KalmanFilter:
         self.state_covariance_matrix = np.zeros([3, 3])
 
         self.measurement_vector = np.zeros(3)
-        self.measurement_covariance_matrix = np.eye(3)
+
+        # This seems important...
+        self.measurement_covariance_matrix = (
+            np.ones([3, 3]) - np.eye(3)) * 5000
 
         self.process_noise_covariance_matrix = np.eye(
             3) * 0.0001
 
-        self.error_covariance_matrix = np.zeros([3, 3])
-        self.system_noise_covariance_matrix = np.zeros([3, 3])
+        self.error_covariance_matrix = np.eye(3)
+        self.system_noise_covariance_matrix = np.eye(3)  # *0.000002
 
         self.old_timestamp = initial_timestamp
         self.time_delta = 0
@@ -45,8 +48,8 @@ class KalmanFilter:
 
     def getKalmanGain(self):
         mat1 = self.error_covariance_matrix @ self.error_covariance_matrix.T
-        mat2 = self.error_covariance_matrix @ self.error_covariance_matrix @ self.error_covariance_matrix
-        print(mat1, mat2)
+        mat2 = self.error_covariance_matrix @ self.error_covariance_matrix @ self.error_covariance_matrix.T
+        #print(mat1, mat2)
         kalman_gain = np.matmul(mat1, np.linalg.pinv(mat2))
         return kalman_gain
 
