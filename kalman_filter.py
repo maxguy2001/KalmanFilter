@@ -16,7 +16,7 @@ class KalmanFilter:
         self.error_covariance_matrix = np.zeros([3, 3])
         self.system_noise_covariance_matrix = np.eye(3)*0.001
 
-        self.old_timestamp = 0
+        self.old_timestamp = initial_timestamp
         self.time_delta = 0
 
         self.new_state_estimate = np.zeros(3)
