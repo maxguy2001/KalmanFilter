@@ -31,6 +31,7 @@ class KalmanFilter:
         # TODO: consider more complex system models later
         return np.array([[1, 0, 0], [self.time_delta, 1, 0], [self.time_delta**2, self.time_delta, 1]])
 
+
     # measurement update functions
     def getErrorCovarianceMatrix(self):
         # propagate from start point
@@ -50,9 +51,9 @@ class KalmanFilter:
         self.state_vector = new_estimate
         return None
 
-    def getStateCovarianceMatrix(self):
+    def getStateCovarianceMatrix(self, kalman_gain):
         self.state_covariance_matrix = self.state_covariance_matrix - \
-            (self.kalman_gain @ self.state_covariance_matrix)
+            (kalman_gain @ self.state_covariance_matrix)
         return None
 
     def propagate(self, current_timestamp):
@@ -66,12 +67,15 @@ class KalmanFilter:
         return None
 
     def measurementAndUpdate(self, observed_state):
-        # get error covariance covariance
+        # get error covariance matrix
         # get kalman gain
         # get state estimate
         # get state covariance matrix
-
-        pass
+        
+        self.getErrorCovarianceMatrix()
+        kalman_gain = self.getKalmanGain()
+        self.getStateEstimate(observed_state)
+        self.getStateCovarianceMatrix(kalman_gain)
 
     def estimate(self, current_timestamp, observed_state):
         self.propagate(current_timestamp)
